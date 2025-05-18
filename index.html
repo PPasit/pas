@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HAPPY BIRTHDAY!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffe6f0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    h1 {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff3399;
+      font-size: 3em;
+      text-shadow: 2px 2px white;
+      animation: pop 1s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes pop {
+      from { transform: translateX(-50%) scale(1); }
+      to { transform: translateX(-50%) scale(1.05); }
+    }
+
+    .slideshow {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 500px;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      z-index: 1;
+    }
+
+    .slideshow img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .slideshow img.active {
+      display: block;
+    }
+
+    .balloon {
+      width: 50px;
+      height: 70px;
+      background-color: red;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute;
+      bottom: -100px;
+      animation: floatUp 6s linear infinite;
+      z-index: 0;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 30px;
+      background: #555;
+      top: 70px;
+      left: 24px;
+    }
+
+    @keyframes floatUp {
+      0% { bottom: -100px; opacity: 0; }
+      50% { opacity: 1; }
+      100% { bottom: 110%; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy Birthday!</h1>
+
+  <!-- Slideshow -->
+  <div class="slideshow">
+    <img src="C:\Users\pasx0\Downloads\beauty_1645946310709.jpeg" class="active" alt="รูปที่ 1">
+    <img src="C:\Users\pasx0\Downloads\0BC10237-BD51-41DE-8F9F-81F2F7CCDEEC.jpg"alt="รูปที่ 2">
+    <img src="C:\Users\pasx0\Downloads\11C6454D-068C-4A71-96AB-A85F4FD94612.jpg" alt="รูปที่ 3">
+    <img src="C:\Users\pasx0\Downloads\ED45DF16-0484-4849-AF4C-2C5B23D1CA0D.jpg" alt="รูปที่ 4">
+    <img src="C:\Users\pasx0\Downloads\IMG_8580_polarr.jpeg" alt="รูปที่ 5">
+  </div>
+
+  <script>
+    // Balloons
+    function createBalloon() {
+      const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc'];
+      const balloon = document.createElement('div');
+      balloon.classList.add('balloon');
+      balloon.style.left = Math.random() * 100 + 'vw';
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      document.body.appendChild(balloon);
+      setTimeout(() => balloon.remove(), 7000);
+    }
+    setInterval(createBalloon, 400);
+
+    // Slideshow
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slideshow img');
+
+    function showNextSlide() {
+      slides[slideIndex].classList.remove('active');
+      slideIndex = (slideIndex + 1) % slides.length;
+      slides[slideIndex].classList.add('active');
+    }
+
+    setInterval(showNextSlide, 3000);
+  </script>
+</body>
+</html>
+
+
