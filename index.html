@@ -110,34 +110,26 @@
                 transform: scale(0.95);
             }
 
-        /* Lyrics Container - ทำหน้าที่เป็น "หน้าต่าง" */
         #lyricsContainer {
             width: 100%;
             text-align: center;
-            /* กำหนดความสูงให้พอดีกับเนื้อเพลงประมาณ 2 บรรทัด (ปรับตาม font-size และ line-height) */
-            /* ตัวอย่าง: 1.3em (font-size) * 1.6 (line-height) * 2 (lines) = 4.16em */
-            /* หาก font-size พื้นฐานของ body คือ 16px, 4.16 * 16px = ~67px. ให้เผื่อเล็กน้อย */
-            height: 75px; /* ปรับความสูงนี้ตามต้องการ */
+            height: 75px; /* ปรับความสูงนี้ตามต้องการ ให้พอดีกับเนื้อเพลง 1-2 บรรทัด */
             overflow: hidden; /* สำคัญมาก: ซ่อนส่วนที่เลื่อนออกนอกกรอบ */
-            position: relative; /* สำหรับการจัดตำแหน่ง #lyricsDisplay ภายใน (ถ้าจำเป็น) */
+            position: relative;
             box-sizing: border-box;
-            /* ไม่มี background, ไม่มี shadow */
         }
 
-        /* Lyrics Display - ส่วนที่เลื่อนจริง */
         #lyricsDisplay {
-            font-size: 1.3em; /* อาจปรับให้ใหญ่ขึ้นเล็กน้อยเพื่อให้อ่านง่าย */
-            color: #4a4a4a; /* สีเข้มเพื่อให้ตัดกับพื้นหลังสีชมพู */
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.6); /* เงาเล็กน้อยช่วยให้อ่านง่ายขึ้น */
+            font-size: 1.3em;
+            color: #4a4a4a;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.6);
             line-height: 1.6;
-            white-space: pre-line; /* ให้ \n ขึ้นบรรทัดใหม่ */
+            white-space: pre-line;
             width: 100%;
-            display: inline-block; /* หรือ block */
-            /* Transition สำหรับ opacity และ transform */
+            display: inline-block;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            /* ตำแหน่งเริ่มต้นและ opacity จะถูกควบคุมโดย JavaScript */
+            /* ตำแหน่งเริ่มต้นจะถูกควบคุมโดย JS */
         }
-
 
         .balloon {
             width: 50px;
@@ -198,7 +190,7 @@
             }
 
             #lyricsContainer {
-                height: 65px; /* ปรับความสูงสำหรับจอเล็ก */
+                height: 65px;
             }
 
             #lyricsDisplay {
@@ -242,7 +234,7 @@
     <audio id="birthdaySong" src="song/Yew.mp3" loop></audio>
 
     <script>
-        // Balloons (โค้ดเดิม)
+        // Balloons
         function createBalloon() {
             const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc', '#cc99ff', '#ff9966', '#66ddaa'];
             const balloon = document.createElement('div');
@@ -262,7 +254,7 @@
         for (let i = 0; i < 12; i++) { setTimeout(createBalloon, Math.random() * 2500); }
         setInterval(createBalloon, 1200);
 
-        // Slideshow (โค้ดเดิม)
+        // Slideshow
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slideshow img');
         const slideIntervalTime = 3000;
@@ -286,7 +278,7 @@
         const playPauseBtn = document.getElementById('playPauseButton');
         const lyricsDisplay = document.getElementById('lyricsDisplay');
         let currentLyricIndex = -1;
-        let isAnimatingLyrics = false; // Flag to prevent animation overlap
+        let isAnimatingLyrics = false;
 
         // ===================================================================
         // === คุณต้องใส่ LYRICS DATA ของคุณเองตรงนี้ให้ถูกต้องกับเพลง  ===
@@ -294,11 +286,11 @@
         // ===================================================================
         const lyricsData = [
             { time: 0, text: "♪ ... ♪" },
-            { time: 3.5, text: "สุขสันต์วันเกิดนะคนดี\nขอให้เธอพบเจอแต่สิ่งดีๆ" }, // ตัวอย่างเนื้อเพลง 2 บรรทัด
+            { time: 3.5, text: "สุขสันต์วันเกิดนะคนดี\nขอให้เธอพบเจอแต่สิ่งดีๆ" },
             { time: 7.2, text: "ในทุกๆ วันที่หมุนผ่านไป" },
             { time: 11.0, text: "มีรอยยิ้มสดใสเสมอเลยนะ" },
             { time: 15.8, text: "(ใส่เนื้อเพลงและเวลาของคุณเอง...)" },
-            { time: 180, text: "" }
+            { time: 180, text: "" } // เคลียร์เนื้อเพลงเมื่อเพลงจบ (หรือก่อนเริ่ม loop)
         ];
         // ===================================================================
 
@@ -319,39 +311,31 @@
             if (newLyricIndex !== currentLyricIndex) {
                 isAnimatingLyrics = true;
                 const newText = (newLyricIndex !== -1 && lyricsData[newLyricIndex]) ? lyricsData[newLyricIndex].text : "";
-                const isInitialMessage = (lyricsDisplay.textContent === "กดปุ่ม Play Music เพื่อฟังเพลงและดูเนื้อเพลง");
+                const isInitialMessage = lyricsDisplay.textContent === "กดปุ่ม Play Music เพื่อฟังเพลงและดูเนื้อเพลง";
 
-                const animateOutDuration = (currentLyricIndex === -1 && isInitialMessage) ? 0 : 500; // No out-animation for the very first "Play Music..." message or if no previous lyric
+                const animateOutDuration = (currentLyricIndex === -1 && isInitialMessage) || lyricsDisplay.textContent === "" ? 0 : 500;
 
                 if (animateOutDuration > 0) {
-                    // 1. Animate out the current lyric
                     lyricsDisplay.style.opacity = '0';
-                    lyricsDisplay.style.transform = 'translateY(-100%)'; // Slide UP and out
+                    lyricsDisplay.style.transform = 'translateY(-100%)';
                 } else {
-                    // If no out-animation, immediately prepare for in-animation
-                    lyricsDisplay.style.opacity = '0'; // Hide immediately
+                    lyricsDisplay.style.opacity = '0';
+                    lyricsDisplay.style.transform = 'translateY(0)';
                 }
 
-
-                setTimeout(() => { // This timeout duration is for the out-animation (or 0 if initial)
-                    // 2. Update the text and reset position for in-animation
+                setTimeout(() => {
                     lyricsDisplay.textContent = newText;
-                    lyricsDisplay.style.transform = 'translateY(100%)'; // Position at the BOTTOM, ready to slide in
-                    lyricsDisplay.style.opacity = '0';                   // Still invisible
-
-                    // 3. Force a reflow to ensure the transform reset is applied before the new animation starts
-                    void lyricsDisplay.offsetWidth;
-
-                    // 4. Animate in the new lyric
+                    lyricsDisplay.style.transform = 'translateY(100%)';
+                    lyricsDisplay.style.opacity = '0';
+                    void lyricsDisplay.offsetHeight; // Force reflow
                     lyricsDisplay.style.opacity = '1';
-                    lyricsDisplay.style.transform = 'translateY(0)'; // Slide UP to the center
+                    lyricsDisplay.style.transform = 'translateY(0)';
 
-                    // Reset animation flag after in-animation should be complete
                     setTimeout(() => {
                         isAnimatingLyrics = false;
-                    }, 500); // Match CSS transition duration (0.5s) for the in-animation
+                    }, 500); // Duration of in-animation
 
-                }, animateOutDuration);
+                }, animateOutDuration); // Wait for out-animation
 
                 currentLyricIndex = newLyricIndex;
             }
@@ -362,8 +346,7 @@
                 audioPlayer.play()
                     .then(() => {
                         playPauseBtn.textContent = 'Pause Music';
-                        // currentLyricIndex = -1; // Reset to re-evaluate first lyric on play
-                        updateLyrics(); // Initial lyrics update on play
+                        updateLyrics();
                     })
                     .catch(error => { console.error("Error playing audio:", error); alert("Could not play audio."); });
             } else {
@@ -375,7 +358,7 @@
         audioPlayer.addEventListener('timeupdate', updateLyrics);
         audioPlayer.addEventListener('play', () => {
             playPauseBtn.textContent = 'Pause Music';
-            currentLyricIndex = -1; // Force re-evaluation of lyrics from start
+            currentLyricIndex = -1;
             updateLyrics();
         });
         audioPlayer.addEventListener('pause', () => { playPauseBtn.textContent = 'Play Music'; });
