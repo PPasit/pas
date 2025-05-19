@@ -10,7 +10,7 @@
             padding: 0;
             background: #ffe6f0;
             overflow: hidden;
-            font-family: 'Comic Sans MS', cursive, sans-serif; /* อาจต้องพิจารณา web font ถ้าต้องการให้แสดงผลเหมือนกันทุกเครื่อง */
+            font-family: 'Comic Sans MS', cursive, sans-serif;
         }
 
         h1 {
@@ -22,7 +22,7 @@
             font-size: 3em;
             text-shadow: 2px 2px white;
             animation: pop 1s ease-in-out infinite alternate;
-            z-index: 2;
+            z-index: 3; /* ทำให้ H1 อยู่บนสุด */
         }
 
         @keyframes pop {
@@ -35,19 +35,28 @@
             }
         }
 
-        .slideshow {
+        /* Wrapper for slideshow and audio controls */
+        .content-wrapper {
             position: absolute;
-            top: 15%;
+            top: 12%; /* ปรับตำแหน่ง top เล็กน้อยเผื่อปุ่ม */
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
             max-width: 500px;
-            height: 300px; /* ปรับความสูงตามต้องการ หรือให้เป็น auto แล้วให้รูปกำหนด */
+            display: flex;
+            flex-direction: column; /* จัดเรียง slideshow และปุ่มในแนวตั้ง */
+            align-items: center; /* จัดให้อยู่ตรงกลางแนวนอน */
+            z-index: 1;
+        }
+
+        .slideshow {
+            width: 100%; /* ให้เต็มความกว้างของ content-wrapper */
+            height: 300px;
             overflow: hidden;
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            z-index: 1;
             background-color: #ccc; /* สีพื้นหลังเผื่อรูปโหลดช้า */
+            margin-bottom: 20px; /* ระยะห่างระหว่าง slideshow กับปุ่มเพลง */
         }
 
             .slideshow img {
@@ -61,15 +70,41 @@
                     display: block;
                 }
 
+        .audio-controls {
+            /* จัดวางโดย flexbox ของ content-wrapper แล้ว */
+            z-index: 2; /* ให้อยู่เหนือบอลลูน แต่ใต้ H1 (ถ้าจำเป็น) */
+        }
+
+        #playPauseButton {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            background-color: #ff3399;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+            #playPauseButton:hover {
+                background-color: #e60073;
+            }
+
+            #playPauseButton:active {
+                transform: scale(0.95);
+            }
+
+
         .balloon {
             width: 50px;
             height: 70px;
-            background-color: red; /* สีเริ่มต้น จะถูก override ด้วย JS */
+            background-color: red;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             position: absolute;
             bottom: -100px;
             animation: floatUp 6s linear infinite;
-            z-index: 0;
+            z-index: 0; /* บอลลูนอยู่หลังสุด */
         }
 
             .balloon::after {
@@ -91,11 +126,11 @@
             10% {
                 opacity: 1;
             }
-            /* ทำให้บอลลูนปรากฏเร็วขึ้นเล็กน้อย */
+
             90% {
                 opacity: 1;
             }
-            /* ทำให้บอลลูนยังคงมองเห็นได้นานขึ้นก่อนจะจางหาย */
+
             100% {
                 bottom: 110%;
                 opacity: 0;
@@ -105,46 +140,56 @@
 </head>
 <body>
     <h1>Happy Birthday!</h1>
-    <!-- Slideshow -->
-    <div class="slideshow">
-        <!-- รูปภาพจะถูกโหลดจากโฟลเดอร์ 'image' ที่อยู่ในระดับเดียวกับ index.html -->
-        <img src="image\1.png" class="active" alt="รูปที่ 1">
-        <img src="image/2.png" alt="รูปที่ 2">
-        <img src="image/3.png" alt="รูปที่ 3">
-        <img src="image/4.png" alt="รูปที่ 4">
-        <img src="image/5.png" alt="รูปที่ 5">
+
+    <div class="content-wrapper">
+        <!-- Slideshow -->
+        <div class="slideshow">
+            <img src="image/1.png" class="active" alt="รูปที่ 1">
+            <img src="image/2.png" alt="รูปที่ 2">
+            <img src="image/3.png" alt="รูปที่ 3">
+            <img src="image/4.png" alt="รูปที่ 4">
+            <img src="image/5.png" alt="รูปที่ 5">
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <button id="playPauseButton">Play Music</button>
+        </div>
     </div>
+
+    <!-- Audio Element -->
+    <audio id="birthdaySong" src="song/Yew.mp3" loop></audio>
+    <!-- ตรวจสอบให้แน่ใจว่าชื่อไฟล์ Yew - Copy.mp3 ถูกต้องและอยู่ในโฟลเดอร์ song -->
+
     <script>
         // Balloons
         function createBalloon() {
-            const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc', '#cc99ff', '#ff9966']; // เพิ่มสี
+            const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc', '#cc99ff', '#ff9966'];
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
-            balloon.style.left = Math.random() * 95 + 'vw'; // ปรับไม่ให้ชิดขอบขวาเกินไป
+            balloon.style.left = Math.random() * 95 + 'vw';
             balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            balloon.style.animationDuration = (Math.random() * 4 + 5) + 's'; // ปรับช่วงเวลาลอยให้นานขึ้นเล็กน้อย
-            balloon.style.animationDelay = (Math.random() * 2) + 's'; // ทำให้บอลลูนเริ่มไม่พร้อมกัน
+            balloon.style.animationDuration = (Math.random() * 4 + 5) + 's';
+            balloon.style.animationDelay = (Math.random() * 2) + 's';
             document.body.appendChild(balloon);
-            setTimeout(() => balloon.remove(), 9000); // เพิ่มเวลาให้สัมพันธ์กับ animationDuration + delay
+            setTimeout(() => balloon.remove(), 9000);
         }
-        // สร้างบอลลูนชุดแรกๆ
-        for (let i = 0; i < 10; i++) { // สร้างบอลลูนเริ่มต้น 10 ลูก
-            setTimeout(createBalloon, Math.random() * 2000); //ทยอยสร้างในช่วง 2 วินาทีแรก
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createBalloon, Math.random() * 2000);
         }
-        setInterval(createBalloon, 1000); // ลดความถี่การสร้างบอลลูนใหม่
+        setInterval(createBalloon, 1000);
 
         // Slideshow
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slideshow img');
 
         function showNextSlide() {
-            if (slides.length === 0) return; // ป้องกัน error ถ้าไม่มีรูป
+            if (slides.length === 0) return;
             slides[slideIndex].classList.remove('active');
             slideIndex = (slideIndex + 1) % slides.length;
             slides[slideIndex].classList.add('active');
         }
 
-        // เริ่ม slideshow เมื่อรูปแรกโหลดเสร็จ (ถ้ามี) หรือหลังจากหน่วงเวลาเล็กน้อย
         if (slides.length > 0 && slides[0].complete) {
             setInterval(showNextSlide, 3000);
         } else if (slides.length > 0) {
@@ -152,6 +197,44 @@
                 setInterval(showNextSlide, 3000);
             };
         }
+
+        // Audio Player
+        const audioPlayer = document.getElementById('birthdaySong');
+        const playPauseBtn = document.getElementById('playPauseButton');
+
+        playPauseBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play()
+                    .then(() => {
+                        playPauseBtn.textContent = 'Pause Music';
+                    })
+                    .catch(error => {
+                        console.error("Error playing audio:", error);
+                        // อาจจะแจ้งผู้ใช้ว่าเล่นเพลงไม่ได้
+                    });
+            } else {
+                audioPlayer.pause();
+                playPauseBtn.textContent = 'Play Music';
+            }
+        });
+
+        // Optional: Update button text if song ends (if not looping)
+        // audioPlayer.addEventListener('ended', () => {
+        //   playPauseBtn.textContent = 'Play Music';
+        // });
+
+        // Optional: If you want the music to try and play on load,
+        // but be aware of browser autoplay policies.
+        // window.addEventListener('load', () => {
+        //   // Attempt to play, but it might be blocked by the browser
+        //   audioPlayer.play().then(() => {
+        //     playPauseBtn.textContent = 'Pause Music';
+        //   }).catch(error => {
+        //     console.log("Autoplay was prevented. User needs to click play.", error);
+        //     playPauseBtn.textContent = 'Play Music'; // Ensure button is correct
+        //   });
+        // });
+
     </script>
 </body>
 </html>
