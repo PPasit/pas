@@ -1,62 +1,74 @@
-<!--<!DOCTYPE html>-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HAPPY BIRTHDAY!</title>
+    <!-- Optional: Favicon link (ถ้าคุณมีไฟล์ favicon.ico ใน root) -->
+    <!-- <link rel="icon" href="favicon.ico" type="image/x-icon"> -->
     <style>
         body {
             margin: 0;
             padding: 0;
             background: #ffe6f0;
-            overflow: hidden;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden; /* ป้องกัน scrollbars จากบอลลูน */
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif; /* เพิ่ม fallback fonts */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* จัด h1 ไว้ด้านบน */
+            min-height: 100vh;
+            padding-top: 2%; /* ให้มีช่องว่างด้านบนบ้าง */
+            box-sizing: border-box;
         }
 
         h1 {
-            position: absolute;
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
+            /* position: absolute; ใช้ flexbox ของ body แทน */
+            /* top: 5%; */
+            /* left: 50%; */
+            /* transform: translateX(-50%); */
             color: #ff3399;
-            font-size: 3em;
+            font-size: 3em; /* อาจปรับตามขนาดหน้าจอ */
             text-shadow: 2px 2px white;
             animation: pop 1s ease-in-out infinite alternate;
-            z-index: 3; /* ทำให้ H1 อยู่บนสุด */
+            z-index: 3;
+            margin-bottom: 20px; /* ระยะห่างจาก content-wrapper */
+            text-align: center;
         }
 
         @keyframes pop {
             from {
-                transform: translateX(-50%) scale(1);
+                transform: scale(1);
             }
 
             to {
-                transform: translateX(-50%) scale(1.05);
+                transform: scale(1.05);
             }
         }
 
-        /* Wrapper for slideshow and audio controls */
         .content-wrapper {
-            position: absolute;
-            top: 12%; /* ปรับตำแหน่ง top เล็กน้อยเผื่อปุ่ม */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
+            /* position: absolute; ใช้ flexbox ของ body แทน */
+            /* top: 12%; */
+            /* left: 50%; */
+            /* transform: translateX(-50%); */
+            width: 90%; /* ปรับให้ responsive มากขึ้น */
             max-width: 500px;
             display: flex;
-            flex-direction: column; /* จัดเรียง slideshow และปุ่มในแนวตั้ง */
-            align-items: center; /* จัดให้อยู่ตรงกลางแนวนอน */
+            flex-direction: column;
+            align-items: center;
             z-index: 1;
         }
 
         .slideshow {
-            width: 100%; /* ให้เต็มความกว้างของ content-wrapper */
-            height: 300px;
+            width: 100%;
+            height: 300px; /* หรือใช้ aspect-ratio ถ้าต้องการให้ปรับตามความกว้าง */
+            /* aspect-ratio: 16 / 9; */
             overflow: hidden;
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            background-color: #ccc; /* สีพื้นหลังเผื่อรูปโหลดช้า */
-            margin-bottom: 20px; /* ระยะห่างระหว่าง slideshow กับปุ่มเพลง */
+            background-color: #ccc;
+            margin-bottom: 20px;
+            position: relative; /* สำหรับรูปภาพภายใน */
         }
 
             .slideshow img {
@@ -64,15 +76,29 @@
                 height: 100%;
                 object-fit: cover;
                 display: none;
+                position: absolute; /* ทำให้ทับซ้อนกันได้ */
+                top: 0;
+                left: 0;
             }
 
                 .slideshow img.active {
                     display: block;
+                    animation: fadeIn 0.5s ease-in-out; /* เพิ่ม fade effect */
                 }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0.3;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         .audio-controls {
-            /* จัดวางโดย flexbox ของ content-wrapper แล้ว */
-            z-index: 2; /* ให้อยู่เหนือบอลลูน แต่ใต้ H1 (ถ้าจำเป็น) */
+            margin-bottom: 20px; /* ระยะห่างก่อนถึงเนื้อเพลง */
+            z-index: 2;
         }
 
         #playPauseButton {
@@ -95,16 +121,35 @@
                 transform: scale(0.95);
             }
 
+        #lyricsContainer {
+            width: 100%;
+            text-align: center;
+            min-height: 60px; /* เพิ่มความสูงขั้นต่ำเล็กน้อย */
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box; /* รวม padding ใน width/height */
+        }
+
+        #lyricsDisplay {
+            font-size: 1.2em;
+            color: #444; /* ทำให้สีเข้มขึ้นเล็กน้อย */
+            line-height: 1.6;
+            white-space: pre-line;
+            transition: opacity 0.3s ease-in-out;
+        }
 
         .balloon {
             width: 50px;
             height: 70px;
-            background-color: red;
+            background-color: red; /* Will be overridden by JS */
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             position: absolute;
             bottom: -100px;
             animation: floatUp 6s linear infinite;
-            z-index: 0; /* บอลลูนอยู่หลังสุด */
+            z-index: 0; /* Behind other content */
+            opacity: 0; /* Start invisible, animation will make it visible */
         }
 
             .balloon::after {
@@ -121,20 +166,54 @@
             0% {
                 bottom: -100px;
                 opacity: 0;
+                transform: translateX(0);
             }
 
             10% {
-                opacity: 1;
+                opacity: 0.8;
             }
 
             90% {
-                opacity: 1;
+                opacity: 0.8;
             }
 
             100% {
-                bottom: 110%;
+                bottom: 110vh;
                 opacity: 0;
+                transform: translateX(calc(var(--drift, 0) * 1px));
             }
+            /* 110vh เพื่อให้ลอยออกนอกจอ */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .slideshow {
+                height: 250px;
+            }
+
+            #playPauseButton {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+
+            #lyricsDisplay {
+                font-size: 1em;
+            }
+
+            .balloon {
+                width: 40px;
+                height: 56px;
+            }
+
+                .balloon::after {
+                    height: 25px;
+                    top: 56px;
+                    left: 19px;
+                }
         }
     </style>
 </head>
@@ -155,33 +234,55 @@
         <div class="audio-controls">
             <button id="playPauseButton">Play Music</button>
         </div>
+
+        <!-- Lyrics Display Area -->
+        <div id="lyricsContainer">
+            <p id="lyricsDisplay"></p>
+        </div>
     </div>
 
-    <!-- Audio Element -->
+    <!-- Audio Element - ตรวจสอบชื่อไฟล์และ path ให้ถูกต้อง -->
     <audio id="birthdaySong" src="song/Yew.mp3" loop></audio>
-    <!-- ตรวจสอบให้แน่ใจว่าชื่อไฟล์ Yew - Copy.mp3 ถูกต้องและอยู่ในโฟลเดอร์ song -->
 
     <script>
         // Balloons
         function createBalloon() {
-            const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc', '#cc99ff', '#ff9966'];
+            const colors = ['#ff6666', '#ffcc66', '#66ccff', '#99ff99', '#ff99cc', '#cc99ff', '#ff9966', '#66ddaa'];
             const balloon = document.createElement('div');
             balloon.classList.add('balloon');
-            balloon.style.left = Math.random() * 95 + 'vw';
+            balloon.style.left = Math.random() * 95 + 'vw'; // Prevent balloons too far right
             balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            balloon.style.animationDuration = (Math.random() * 4 + 5) + 's';
-            balloon.style.animationDelay = (Math.random() * 2) + 's';
+
+            const duration = (Math.random() * 5 + 6); // 6-11 seconds
+            balloon.style.animationDuration = duration + 's';
+            balloon.style.animationDelay = (Math.random() * 3) + 's'; // Stagger start times
+
+            // Add slight horizontal drift to balloons
+            const driftAmount = (Math.random() - 0.5) * 100; // Random drift between -50px and 50px
+            balloon.style.setProperty('--drift', driftAmount);
+
+
             document.body.appendChild(balloon);
-            setTimeout(() => balloon.remove(), 9000);
+            setTimeout(() => {
+                if (balloon.parentNode) { // Check if balloon still exists
+                    balloon.remove();
+                }
+            }, (duration + parseFloat(balloon.style.animationDelay || 0) + 1) * 1000); // Remove after animation + delay + buffer
         }
-        for (let i = 0; i < 10; i++) {
-            setTimeout(createBalloon, Math.random() * 2000);
+
+        // Initial batch of balloons
+        for (let i = 0; i < 12; i++) {
+            setTimeout(createBalloon, Math.random() * 2500); // Create initial balloons over 2.5 seconds
         }
-        setInterval(createBalloon, 1000);
+        // Continuously create balloons
+        setInterval(createBalloon, 1200); // Create a new balloon roughly every 1.2 seconds
+
 
         // Slideshow
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slideshow img');
+        const slideIntervalTime = 3000; // 3 seconds per slide
+        let slideInterval;
 
         function showNextSlide() {
             if (slides.length === 0) return;
@@ -190,27 +291,91 @@
             slides[slideIndex].classList.add('active');
         }
 
-        if (slides.length > 0 && slides[0].complete) {
-            setInterval(showNextSlide, 3000);
-        } else if (slides.length > 0) {
-            slides[0].onload = () => {
-                setInterval(showNextSlide, 3000);
-            };
+        function startSlideshow() {
+            if (slides.length > 0) {
+                // Ensure first slide is active immediately if not already
+                if (!document.querySelector('.slideshow img.active')) {
+                    slides[0].classList.add('active');
+                }
+                slideInterval = setInterval(showNextSlide, slideIntervalTime);
+            }
         }
 
-        // Audio Player
+        function stopSlideshow() {
+            clearInterval(slideInterval);
+        }
+
+        // Start slideshow when images are likely loaded or page is ready
+        window.addEventListener('load', startSlideshow);
+
+
+        // Audio Player & Lyrics
         const audioPlayer = document.getElementById('birthdaySong');
         const playPauseBtn = document.getElementById('playPauseButton');
+        const lyricsDisplay = document.getElementById('lyricsDisplay');
+        let currentLyricIndex = -1;
+
+        // ===================================================================
+        // === คุณต้องใส่ LYRICS DATA ของคุณเองตรงนี้ให้ถูกต้องกับเพลง  ===
+        // ===         Yew - Copy.mp3 ของคุณ (เนื้อเพลงและเวลา)         ===
+        // ===================================================================
+        const lyricsData = [
+            { time: 0, text: "♪ ... ♪" }, // ตัวอย่าง: ดนตรีเริ่ม
+            { time: 3.5, text: "สุขสันต์วันเกิดนะคนดีเธอรู้ไหมกำลังมีใครดีใจที่ได้พบเธอ" },
+            { time: 7.2, text: "ขอให้เธอพบเจอแต่สิ่งดีๆ" },
+            { time: 11.0, text: "ในทุกๆ วันที่หมุนผ่านไป" },
+            { time: 15.8, text: "มีรอยยิ้มสดใสเสมอเลยนะ" },
+            { time: 20.1, text: "(อย่าลืมใส่เนื้อเพลงและเวลาของคุณเอง...)" },
+            // ... เพิ่มเนื้อเพลงและเวลาให้ครบทั้งเพลง ...
+            // ตัวอย่างท่อนสุดท้าย (ถ้าเพลงยาวประมาณ 3 นาที)
+            { time: 175, text: "Happy Birthday to you!" },
+            { time: 180, text: "" } // เคลียร์เนื้อเพลงเมื่อจบ (หรือก่อนเริ่ม loop ใหม่)
+        ];
+        // ===================================================================
+        // ===================================================================
+
+        function updateLyrics() {
+            if (!audioPlayer || audioPlayer.paused) { // ไม่ต้องอัปเดตถ้าเพลงหยุด
+                // lyricsDisplay.textContent = ""; // หรือแสดงข้อความเริ่มต้น
+                return;
+            }
+
+            const currentTime = audioPlayer.currentTime;
+            let newLyricIndex = -1;
+
+            for (let i = lyricsData.length - 1; i >= 0; i--) {
+                if (currentTime >= lyricsData[i].time) {
+                    newLyricIndex = i;
+                    break;
+                }
+            }
+
+            if (newLyricIndex !== currentLyricIndex) {
+                lyricsDisplay.style.opacity = 0; // Start fade out
+                setTimeout(() => {
+                    if (newLyricIndex !== -1 && lyricsData[newLyricIndex]) {
+                        lyricsDisplay.textContent = lyricsData[newLyricIndex].text;
+                    } else {
+                        lyricsDisplay.textContent = ""; // Default if no lyric for current time
+                    }
+                    lyricsDisplay.style.opacity = 1; // Fade in new lyric
+                }, 150); // Match half of transition time for smooth effect
+
+                currentLyricIndex = newLyricIndex;
+            }
+        }
 
         playPauseBtn.addEventListener('click', () => {
             if (audioPlayer.paused) {
                 audioPlayer.play()
                     .then(() => {
                         playPauseBtn.textContent = 'Pause Music';
+                        currentLyricIndex = -1; // Reset to ensure first lyric shows
+                        updateLyrics(); // Initial lyrics update
                     })
                     .catch(error => {
                         console.error("Error playing audio:", error);
-                        // อาจจะแจ้งผู้ใช้ว่าเล่นเพลงไม่ได้
+                        alert("Could not play audio. Please check browser permissions or file path.");
                     });
             } else {
                 audioPlayer.pause();
@@ -218,22 +383,36 @@
             }
         });
 
-        // Optional: Update button text if song ends (if not looping)
-        // audioPlayer.addEventListener('ended', () => {
-        //   playPauseBtn.textContent = 'Play Music';
-        // });
+        audioPlayer.addEventListener('timeupdate', updateLyrics);
 
-        // Optional: If you want the music to try and play on load,
-        // but be aware of browser autoplay policies.
-        // window.addEventListener('load', () => {
-        //   // Attempt to play, but it might be blocked by the browser
-        //   audioPlayer.play().then(() => {
-        //     playPauseBtn.textContent = 'Pause Music';
-        //   }).catch(error => {
-        //     console.log("Autoplay was prevented. User needs to click play.", error);
-        //     playPauseBtn.textContent = 'Play Music'; // Ensure button is correct
-        //   });
-        // });
+        audioPlayer.addEventListener('play', () => {
+            playPauseBtn.textContent = 'Pause Music'; // Ensure button state is correct
+            currentLyricIndex = -1;
+            updateLyrics();
+        });
+
+        audioPlayer.addEventListener('pause', () => {
+            playPauseBtn.textContent = 'Play Music'; // Ensure button state is correct
+        });
+
+        audioPlayer.addEventListener('seeked', () => {
+            currentLyricIndex = -1; // Reset index on seek
+            updateLyrics();
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            if (!audioPlayer.loop) { // Only if not looping
+                playPauseBtn.textContent = 'Play Music';
+                lyricsDisplay.textContent = "♪ เพลงจบแล้ว ♪";
+                currentLyricIndex = -1;
+            } else { // If looping, reset for the next loop
+                currentLyricIndex = -1;
+                // updateLyrics will be called by timeupdate
+            }
+        });
+
+        // Initial state for lyrics display (e.g., prompt to play)
+        lyricsDisplay.textContent = "กดปุ่ม Play Music เพื่อฟังเพลงและดูเนื้อเพลง";
 
     </script>
 </body>
